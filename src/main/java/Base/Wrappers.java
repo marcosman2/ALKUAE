@@ -97,7 +97,7 @@ public class Wrappers {
             PageFactory.initElements(driver, this);
             waitForEnabled(password);
             type(password, dataCredentials.get("AE_Password"));
-			takeScreenshot("Evidences/WWA/WWA_verifyDealsMonthDate_BeforeLP.png");
+			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_BeforeLP.png");
             clickElement(btnNext);
 
             driver.switchTo().newWindow(WindowType.TAB);
@@ -109,7 +109,7 @@ public class Wrappers {
             PageFactory.initElements(driver, this);
             LastPassPage pgLastPass = new LastPassPage();
             pgLastPass.logIntoLastPass(dataCredentials.get("LP_User"), dataCredentials.get("LP_Password"));
-			takeScreenshot("Evidences/WWA/WWA_verifyDealsMonthDate_AfterLP.png");
+			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP.png");
             String authCode = pgLastPass.getOneTimeCode();
 
             driver.close();
