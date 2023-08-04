@@ -50,7 +50,8 @@ public class Wrappers {
         try{
 
             driver = WebDriverSingleton.getInstance();
-            driver.manage().window().setPosition(new Point(1920, 0));
+            //driver.manage().window().setPosition(new Point(1920, 0));
+			driver.manage().window().setSize(new Dimension(1920, 1080));
             driver.manage().window().maximize();
             driver.get("https://alku-uat.adkalpha.com/");
         }
