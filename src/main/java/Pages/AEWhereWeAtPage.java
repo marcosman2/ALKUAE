@@ -53,6 +53,9 @@ public class AEWhereWeAtPage extends Wrappers {
 
             scrollToElement(lblDealsMonth);
             highlightLabel(lblDealsMonth);
+			
+			System.out.println("&&&&&&&&&&"+lblDealsMonth.getText().replace("(", "").replace(")", ""));
+            System.out.println("$$$$$$$$$$"+pgBoards.getPeriodDateRange(month));
 
             if(lblDealsMonth.getText().replace("(", "").replace(")", "").equalsIgnoreCase(pgBoards.getPeriodDateRange(month))){
 
