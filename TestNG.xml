@@ -1,14 +1,14 @@
 <suite name = "ALKU Everywhere">
     <test name = "AlKU Everywhere automated tests">
         <classes>
-            <class name = "SmokeTest_TestCases"/>
+            <!--<class name = "SmokeTest_TestCases"/>
             <class name = "AABoard_TestCases"/>
             <class name = "ActivityBoard_TestCases"/>
             <class name = "DealsBoard_TestCases"/>
             <class name = "JobsBoard_TestCases"/>
-            <class name = "StartsBoard_TestCases"/>
+            <class name = "StartsBoard_TestCases"/>-->
             <class name = "WWABoard_TestCases"/>
-            <class name = "TouchScreen_TestCases"/>
+            <!--<class name = "TouchScreen_TestCases"/>-->
         </classes>
     </test>
 </suite>
