@@ -48,11 +48,8 @@ public class LastPassPage extends Wrappers {
 
         try{
 
-            if(waitForDisplayed(driver.findElement(By.xpath("//div[@class='lp-header__mobile-menu']")))){
-
-                clickElement(driver.findElement(By.xpath("//div[@class='lp-header__mobile-menu']")));
-            }
-			
+            clickElement(driver.findElement(By.xpath("//div[@class='lp-header__mobile-menu']")));
+            			
 			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP.png");
 			
 			clickElement(linkLogIn);
