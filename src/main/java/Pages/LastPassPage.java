@@ -48,7 +48,12 @@ public class LastPassPage extends Wrappers {
 
         try{
 
-            clickElement(linkLogIn);
+            if(waitForDisplayed(driver.findElement(By.xpath("//div[@class='lp-header__mobile-menu']")))){
+
+                clickElement(driver.findElement(By.xpath("//div[@class='lp-header__mobile-menu']")));
+            }
+			
+			clickElement(linkLogIn);
             type(txtUsername, user);
             type(txtPassword, pwd);
             clickElement(btnLogIn);

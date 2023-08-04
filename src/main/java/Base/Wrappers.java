@@ -99,6 +99,7 @@ public class Wrappers {
             type(password, dataCredentials.get("AE_Password"));
 			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_BeforeLP.png");
             clickElement(btnNext);
+			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_BeforeLP2.png");
 
             driver.switchTo().newWindow(WindowType.TAB);
 
@@ -111,6 +112,7 @@ public class Wrappers {
             pgLastPass.logIntoLastPass(dataCredentials.get("LP_User"), dataCredentials.get("LP_Password"));
 			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP.png");
             String authCode = pgLastPass.getOneTimeCode();
+			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP2.png");
 
             driver.close();
             driver.switchTo().window(tabs.get(0));
@@ -118,7 +120,9 @@ public class Wrappers {
             PageFactory.initElements(driver, this);
             waitForEnabled(onePassCode);
             type(onePassCode, authCode);
+			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP3.png");
             clickElement(btnVerify);
+			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP4.png");
         }
         catch(Exception e){
 
