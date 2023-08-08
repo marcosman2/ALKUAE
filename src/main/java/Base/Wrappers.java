@@ -107,9 +107,7 @@ public class Wrappers {
             PageFactory.initElements(driver, this);
             LastPassPage pgLastPass = new LastPassPage();
             pgLastPass.logIntoLastPass(dataCredentials.get("LP_User"), dataCredentials.get("LP_Password"));
-			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP3.png");
-            String authCode = pgLastPass.getOneTimeCode();
-			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP4.png");
+			String authCode = pgLastPass.getOneTimeCode();
 
             driver.close();
             driver.switchTo().window(tabs.get(0));
@@ -117,10 +115,7 @@ public class Wrappers {
             PageFactory.initElements(driver, this);
             waitForEnabled(onePassCode);
             type(onePassCode, authCode);
-			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP3.png");
-            clickElement(btnVerify);
-			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP4.png");
-			driver.manage().window().setSize(new Dimension(1920, 1080));
+			clickElement(btnVerify);			
         }
         catch(Exception e){
 

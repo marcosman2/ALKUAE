@@ -49,11 +49,7 @@ public class LastPassPage extends Wrappers {
 
         try{
 
-            driver.manage().window().setSize(new Dimension(1920, 1080));
-            			
-			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP.png");
-			
-			clickElement(linkLogIn);
+            clickElement(linkLogIn);
 			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP2.png");
             type(txtUsername, user);
             type(txtPassword, pwd);
