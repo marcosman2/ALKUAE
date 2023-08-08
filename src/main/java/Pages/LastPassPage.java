@@ -48,7 +48,7 @@ public class LastPassPage extends Wrappers {
 
         try{
 
-            clickElement(driver.findElement(By.xpath("//div[@class='lp-header__mobile-menu']")));
+            driver.manage().window().setSize(new Dimension(1920, 1080));
             			
 			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP.png");
 			

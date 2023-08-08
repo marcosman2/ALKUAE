@@ -50,8 +50,6 @@ public class Wrappers {
         try{
 
             driver = WebDriverSingleton.getInstance();
-            //driver.manage().window().setPosition(new Point(1920, 0));
-			driver.manage().window().setSize(new Dimension(1920, 1080));
             driver.manage().window().maximize();
             driver.get("https://alku-uat.adkalpha.com/");
         }
@@ -122,6 +120,7 @@ public class Wrappers {
 			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP3.png");
             clickElement(btnVerify);
 			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP4.png");
+			driver.manage().window().setSize(new Dimension(1920, 1080));
         }
         catch(Exception e){
 
