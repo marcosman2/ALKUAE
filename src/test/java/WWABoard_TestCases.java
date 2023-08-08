@@ -86,7 +86,7 @@ public class WWABoard_TestCases extends Wrappers {
         //takeScreenshot("Evidences/WWA/WWA_verifyDealsMonthDate_DealsMonth.png");
     }
 
-    /*@Test(description = "Verify that 'Deals Progress' date matches with selected period", priority = 2)
+    @Test(description = "Verify that 'Deals Progress' date matches with selected period", priority = 2)
     public void verifyDealsProgressDate(){
 
         goToBoardAndSelectManagerAndPeriod(0);
@@ -104,7 +104,7 @@ public class WWABoard_TestCases extends Wrappers {
         Assert.assertTrue(pgWWA.isDealsStackRankDateTheExpected("June"), "Deals Stack Rank date does not match");
         TestReport.logPass("Passed - 'Deals Stack Rank' date matches with selected period");
         //takeScreenshot("Evidences/WWA/WWA_verifyDealsStackRankDate_StackRank.png");
-    }*/
+    }
 
 
    @AfterMethod

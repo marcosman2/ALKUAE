@@ -50,7 +50,6 @@ public class LastPassPage extends Wrappers {
         try{
 
             clickElement(linkLogIn);
-			takeScreenshot("Evidences/WWABoard/WWA_verifyDealsMonthDate_AfterLP2.png");
             type(txtUsername, user);
             type(txtPassword, pwd);
             clickElement(btnLogIn);
