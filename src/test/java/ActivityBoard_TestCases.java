@@ -1,6 +1,6 @@
-import Base.TestReport;
-import Base.Wrappers;
-import Pages.*;
+import base.TestReport;
+import base.Wrappers;
+import pages.*;
 import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
@@ -48,32 +48,20 @@ public class ActivityBoard_TestCases extends Wrappers {
 
     public void goToBoardAndAddJob(int row){
 
-        try{
+        testData = (HashMap<String, String>) testCasesData[row][0];
 
-            if(pgHome.waitForHomeToDisplays()){
+        pgHome.selectDepartment(testData.get("Department"));
+        pgManagers.selectManager(testData.get("User"));
+        pgBoards.selectBoard(testData.get("Board"));
 
-                TestReport.logInfo("Navigated to ALKU AE");
+        if(pgActivity.isActivityBoardDisplayed()){
 
-                testData = (HashMap<String, String>) testCasesData[row][0];
-
-                pgHome.selectDepartment(testData.get("Department"));
-                pgManagers.selectManager(testData.get("User"));
-                pgBoards.selectBoard(testData.get("Board"));
-
-                if(pgActivity.isActivityBoardDisplayed()){
-
-                    waitAPause(3);
-                    pgActivity.clickOnAddJob(testData.get("Recruiter"));
-                    pgActivity.selectCompanyAndPosition(testData.get("Company"), testData.get("Position"));
-                    pgActivity.selectDate(testData.get("Date"), testData.get("Day"));
-                    pgActivity.selectTimeZoneAndMeetingWay( testData.get("TimeZone"), testData.get("Phone_F2F"));
-                    TestReport.logInfo("Information needed to add a Job entered");
-                }
-            }
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to navigate to application, go to Activity board and add a Job");
+            waitAPause(3);
+            pgActivity.clickOnAddJob(testData.get("Recruiter"));
+            pgActivity.selectCompanyAndPosition(testData.get("Company"), testData.get("Position"));
+            pgActivity.selectDate(testData.get("Date"), testData.get("Day"));
+            pgActivity.selectTimeZoneAndMeetingWay( testData.get("TimeZone"), testData.get("Phone_F2F"));
+            TestReport.logInfo("Information needed to add a Job entered");
         }
     }
 

@@ -1,6 +1,6 @@
-import Base.TestReport;
-import Base.Wrappers;
-import Pages.*;
+import base.TestReport;
+import base.Wrappers;
+import pages.*;
 import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
@@ -54,29 +54,18 @@ public class TouchScreen_TestCases extends Wrappers {
 
     public void goToTSAndBoard(int row){
 
-        try{
+        testData = (HashMap<String, String>) testCasesData[row][0];
+        pgTouch.navigateToTS(testData.get("Department"));
 
-            if(pgHome.waitForHomeToDisplays()){
+        if(testData.get("Board").equalsIgnoreCase("Where We At")){
 
-                TestReport.logInfo("Navigated to ALKU AE");
-
-                testData = (HashMap<String, String>) testCasesData[row][0];
-                pgTouch.navigateToTS(testData.get("Department"));
-
-                if(testData.get("Board").equalsIgnoreCase("Where We At")){
-
-                    pgTouch.navigateToBoard("where-we-at".toLowerCase());
-                }
-                else{
-
-                    pgTouch.navigateToBoard(testData.get("Board").toLowerCase());
-                }
-            }
+            pgTouch.navigateToBoard("where-we-at".toLowerCase());
         }
-        catch(Exception e){
+        else{
 
-            TestReport.logFail("Failed - Issue trying to navigate to application and Board "+testData.get("Board")+"on TS mode");
+            pgTouch.navigateToBoard(testData.get("Board").toLowerCase());
         }
+
     }
 
     @Test(description = "Verify that 'Deals' board displays on TouchScreen mode", priority = 1)

@@ -1,6 +1,7 @@
-package Base;
+package base;
 
-import Pages.LastPassPage;
+import pages.AEHomePage;
+import pages.LastPassPage;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
@@ -10,7 +11,6 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import java.lang.reflect.Field;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -41,27 +41,20 @@ public class Wrappers {
     @FindBy(id="idSubmit_SAOTCC_Continue")
     private WebElement btnVerify;
 
-    public static final String bsUser = "marcosmanrique_d8GUFe";
-    public static final String bsPwd = "TpaWeDxW8q5ZFwuYidwV";
-    public static final String URL = "https://"+bsUser+":"+bsPwd+"@hub-cloud.browserstack.com/wd/hub";
+    public static final String BS_USER = "marcosmanrique_d8GUFe";
+    public static final String BS_PWD = "TpaWeDxW8q5ZFwuYidwV";
+    public static final String URL = "https://"+ BS_USER +":"+ BS_PWD +"@hub-cloud.browserstack.com/wd/hub";
 
     public static void initialization() {
 
-        try{
-
-            driver = WebDriverSingleton.getInstance();
-            driver.manage().window().maximize();
-            driver.get("https://alku-uat.adkalpha.com/");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Issue trying to navigate to ALKU AE");
-        }
+        driver = WebDriverSingleton.getInstance();
+        driver.manage().window().maximize();
+        driver.get("https://alku-uat.adkalpha.com/");
     }
 
     public static void browserStackInitialization() throws MalformedURLException {
 
-        String URL = "https://"+bsUser+":"+bsPwd+"@hub-cloud.browserstack.com/wd/hub";
+        String url = "https://"+ BS_USER +":"+ BS_PWD +"@hub-cloud.browserstack.com/wd/hub";
 
         ChromeOptions browserOptions = new ChromeOptions();
         browserOptions.setPlatformName("Windows 10");
@@ -70,19 +63,30 @@ public class Wrappers {
         cloudOptions.put("name", "Alku Everywhere smoke test");
         browserOptions.setCapability("cloud:options", cloudOptions);
 
-        driver = new RemoteWebDriver(new URL(URL), browserOptions);
+        driver = new RemoteWebDriver(new URL(url), browserOptions);
         driver.manage().window().maximize();
         driver.get("https://alku-uat.adkalpha.com/");
     }
 
-    public boolean waitForDisplayed(WebElement element){
+    public boolean waitForDisplayed(WebElement element, String errorMessage){
 
-        wait = new WebDriverWait(driver, Duration.ofSeconds(45));
-        wait.until(ExpectedConditions.visibilityOf(element));
-        return element.isDisplayed();
+        boolean isElement = false;
+
+        try{
+
+            wait = new WebDriverWait(driver, Duration.ofSeconds(45));
+            wait.until(ExpectedConditions.visibilityOf(element));
+            isElement = true;
+        }
+        catch(Exception e){
+
+            TestReport.logFail("Failed - "+errorMessage);
+        }
+
+        return isElement;
     }
 
-    public void fillOutCredentials(HashMap<String, String> dataCredentials /*String lpUser, String lpPassword*/) {
+    public void fillOutCredentials(HashMap<String, String> dataCredentials) {
 
         try {
 
@@ -107,7 +111,7 @@ public class Wrappers {
             PageFactory.initElements(driver, this);
             LastPassPage pgLastPass = new LastPassPage();
             pgLastPass.logIntoLastPass(dataCredentials.get("LP_User"), dataCredentials.get("LP_Password"));
-			String authCode = pgLastPass.getOneTimeCode();
+            String authCode = pgLastPass.getOneTimeCode();
 
             driver.close();
             driver.switchTo().window(tabs.get(0));
@@ -115,35 +119,32 @@ public class Wrappers {
             PageFactory.initElements(driver, this);
             waitForEnabled(onePassCode);
             type(onePassCode, authCode);
-			clickElement(btnVerify);			
+            clickElement(btnVerify);
         }
         catch(Exception e){
 
-            TestReport.logFail("Issue trying to fill out credentials");
+            TestReport.logFail("Failed - Issue trying logging into the application");
         }
+
     }
 
-    public void logIntoApplication(Object[][] dpLogin, int row){
+    public boolean logIntoApplication(Object[][] dpLogin, int row){
 
         HashMap<String, String> dataCredentials = (HashMap<String, String>) dpLogin[row][0];
         fillOutCredentials(dataCredentials);
-    }
 
-    /*private static String getWebElementName(WebElement element) {
-        try {
-            Field field = element.getClass().getDeclaredField("name");
-            field.setAccessible(true);
+        AEHomePage pgHome = new AEHomePage();
 
-            FindBy findByAnnotation = field.getAnnotation(FindBy.class);
-            if (findByAnnotation != null) {
-                return findByAnnotation.id(); // or you can use other attributes like name, xpath, etc.
-            }
-        } catch (NoSuchFieldException | SecurityException e) {
-            e.printStackTrace();
+        if(pgHome.waitForHomeToDisplays()){
+
+            TestReport.logInfo("Navigated to ALKU AE");
+            return true;
         }
+        else{
 
-        return null;
-    }*/
+            return false;
+        }
+    }
 
     public boolean waitForEnabled(WebElement element){
 
@@ -166,18 +167,11 @@ public class Wrappers {
 
     public void mouseOver(WebElement element){
 
-        try{
+        waitForDisplayed(element, "Expected element not displayed");
+        waitAPause(2);
 
-            waitForDisplayed(element);
-            waitAPause(2);
-
-            Actions action = new Actions(driver);
-            action.moveToElement(element).perform();
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Issue trying to apply a moseOver on element: "+element.toString());
-        }
+        Actions action = new Actions(driver);
+        action.moveToElement(element).perform();
     }
 
     public static void finalization() {
@@ -218,7 +212,7 @@ public class Wrappers {
         try {
             Thread.sleep(seconds*1000);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -253,7 +247,7 @@ public class Wrappers {
                 }
             }
         } else {
-            System.out.println("Folder does not exist");
+            TestReport.logInfo("Folder does not exist");
         }
     }
 
@@ -272,17 +266,10 @@ public class Wrappers {
 
     public static void highlightLabel(WebElement labelElement) {
 
-        try{
-
-            JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-            String script = "arguments[0].style.backgroundColor = 'yellow';"
-                    + "arguments[0].style.border = '2px solid red';";
-            jsExecutor.executeScript(script, labelElement);
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Issue trying to highlight the element: "+ labelElement.toString());
-        }
+        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+        String script = "arguments[0].style.backgroundColor = 'yellow';"
+           + "arguments[0].style.border = '2px solid red';";
+        jsExecutor.executeScript(script, labelElement);
     }
 
 }

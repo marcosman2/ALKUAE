@@ -1,7 +1,7 @@
-package Pages;
+package pages;
 
-import Base.TestReport;
-import Base.Wrappers;
+import base.TestReport;
+import base.Wrappers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -46,31 +46,16 @@ public class AEDealsPage extends Wrappers {
 
     public boolean isDealsBoardDisplayed(){
 
-        try{
-
-            waitForDisplayed(lblTotalDeals);
-            isADealsDisplayed = true;
-            TestReport.logInfo("Navigated to Deals board");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to navigate to Deals board");
-        }
+        waitForDisplayed(lblTotalDeals, "Issue trying to navigate to Deals board");
+        isADealsDisplayed = true;
+        TestReport.logInfo("Navigated to Deals board");
 
         return isADealsDisplayed;
     }
 
     public int getDealsRecords(){
 
-        try{
-
-            dealsRecords = driver.findElements(By.xpath("//div[@class='element-container']"));
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to get all Deals records");
-        }
-
+        dealsRecords = driver.findElements(By.xpath("//div[@class='element-container']"));
         return dealsRecords.size();
     }
 
@@ -78,25 +63,18 @@ public class AEDealsPage extends Wrappers {
 
         float totalSpread = 0;
 
-        try{
+        waitAPause(2);
+        Float[] spreads = new Float[getDealsRecords()];
 
-            waitAPause(2);
-            Float[] spreads = new Float[getDealsRecords()];
+        for(row = 1; row <= getDealsRecords(); row++){
 
-            for(row = 1; row <= getDealsRecords(); row++){
-
-                spreads[row-1] = Float.valueOf(driver.findElement(By.xpath("(//span[@class='mobile-name' and contains(text(), 'Spread')])["+row+"]/parent::div"))
-                        .getAttribute("innerText").replace("$", ""));
-            }
-
-            for(row = 0; row< spreads.length; row++){
-
-                totalSpread = totalSpread + spreads[row];
-            }
+            spreads[row-1] = Float.valueOf(driver.findElement(By.xpath("(//span[@class='mobile-name' and contains(text(), 'Spread')])["+row+"]/parent::div"))
+                    .getAttribute("innerText").replace("$", ""));
         }
-        catch(Exception e){
 
-            TestReport.logFail("Failed - Issue trying to get Total Spread");
+        for(row = 0; row< spreads.length; row++){
+
+            totalSpread = totalSpread + spreads[row];
         }
 
        return totalSpread;
@@ -109,35 +87,27 @@ public class AEDealsPage extends Wrappers {
 
     public float getAverageMargin(){
 
-        try {
+        waitAPause(2);
 
-            waitAPause(2);
+        Float[] margins = new Float[getDealsRecords()];
 
-            Float[] margins = new Float[getDealsRecords()];
+        for(row = 1; row <= getDealsRecords(); row++){
 
-            for(row = 1; row <= getDealsRecords(); row++){
-
-                margins[row-1] = Float.valueOf(driver.findElement(By.xpath("(//span[@class='mobile-name' and contains(text(), 'Per.')])["+row+"]/parent::div"))
-                        .getAttribute("innerText").replace("%", ""));
-            }
-
-            for(row = 0; row< margins.length; row++){
-
-                totalMargin = totalMargin + margins[row];
-            }
+            margins[row-1] = Float.valueOf(driver.findElement(By.xpath("(//span[@class='mobile-name' and contains(text(), 'Per.')])["+row+"]/parent::div"))
+                    .getAttribute("innerText").replace("%", ""));
         }
-        catch(Exception e){
 
-            TestReport.logFail("Failed - Issue trying to get Average Margin");
+        for(row = 0; row< margins.length; row++){
+
+            totalMargin = totalMargin + margins[row];
         }
 
         return totalMargin/getDealsRecords();
-
     }
 
     public boolean totalDealsMatchesWithRecords(){
 
-        waitForDisplayed(lblTotalDealsValue);
+        waitForDisplayed(lblTotalDealsValue, "Issue trying to check Total Deals value");
 
         if(getDealsRecords() == Integer.valueOf(lblTotalDealsValue.getText())){
 
@@ -154,21 +124,14 @@ public class AEDealsPage extends Wrappers {
 
     public boolean totalSpreadMatchesWithRecords(){
 
-        try{
+        if(getTotalSpread() == Float.valueOf(lblTotalSpreadValue.getText().replace("$", ""))){
 
-            if(getTotalSpread() == Float.valueOf(lblTotalSpreadValue.getText().replace("$", ""))){
-
-                valueMatches = true;
-                highlightLabel(lblTotalSpreadValue);
-            }
-            else{
-
-                TestReport.logFail("Failed - 'Total Spread' does not match with column values sum");
-            }
+            valueMatches = true;
+            highlightLabel(lblTotalSpreadValue);
         }
-        catch(Exception e){
+        else{
 
-            TestReport.logFail("Failed - Issue trying to check Total Spread value");
+            TestReport.logFail("Failed - 'Total Spread' does not match with column values sum");
         }
 
         return valueMatches;
@@ -176,48 +139,32 @@ public class AEDealsPage extends Wrappers {
 
     public boolean averageSpreadMatchesWithRecords(){
 
-       try{
+       if(getAverageSpread() == Float.valueOf(lblAverageSpreadValue.getText().replace("$", ""))){
 
-           if(getAverageSpread() == Float.valueOf(lblAverageSpreadValue.getText().replace("$", ""))){
-
-               valueMatches = true;
-               highlightLabel(lblAverageSpreadValue);
-           }
-           else{
-
-               TestReport.logFail("Failed - 'Average Spread' does not match with column values average");
-           }
+           valueMatches = true;
+           highlightLabel(lblAverageSpreadValue);
        }
-       catch(Exception e){
+       else{
 
-           TestReport.logFail("Failed - Issue trying to check Average Spread value");
+           TestReport.logFail("Failed - 'Average Spread' does not match with column values average");
        }
-
-
 
         return valueMatches;
     }
 
     public boolean averageMarginMatchesWithRecords(){
 
-        try{
+        waitAPause(2);
+        float averageMargin = Float.parseFloat(lblAverageMarginValue.getText().replace("%", ""));
 
-            waitAPause(2);
-            float averageMargin = Float.valueOf(lblAverageMarginValue.getText().replace("%", ""));
+        if((int)getAverageMargin() == (int)averageMargin){
 
-            if((int)getAverageMargin() == (int)averageMargin){
-
-                valueMatches = true;
-                highlightLabel(lblAverageMarginValue);
-            }
-            else{
-
-                TestReport.logFail("Failed - 'Average Margin' does not match with column values average");
-            }
+            valueMatches = true;
+            highlightLabel(lblAverageMarginValue);
         }
-        catch(Exception e){
+        else{
 
-            TestReport.logFail("Failed - Issue trying to check Average Margin value");
+            TestReport.logFail("Failed - 'Average Margin' does not match with column values average");
         }
 
         return valueMatches;
@@ -225,23 +172,16 @@ public class AEDealsPage extends Wrappers {
 
     public boolean isFiscalDateTheExpected(String month){
 
-        try{
+        AEBoardsPage pgBoards = new AEBoardsPage();
 
-            AEBoardsPage pgBoards = new AEBoardsPage();
+        if(lblFiscalDate.getText().replace(" ", "").equalsIgnoreCase(pgBoards.getPeriodDateRange(month))){
 
-            if(lblFiscalDate.getText().replace(" ", "").equalsIgnoreCase(pgBoards.getPeriodDateRange(month))){
-
-                valueMatches = true;
-                highlightLabel(lblFiscalDate);
-            }
-            else{
-
-                TestReport.logFail("Failed - Fiscal date range is not the expected one");
-            }
+            valueMatches = true;
+            highlightLabel(lblFiscalDate);
         }
-        catch(Exception e){
+        else{
 
-            TestReport.logFail("Failed - Issue trying to check Fiscal Date value");
+            TestReport.logFail("Failed - Fiscal date range is not the expected one");
         }
 
         return valueMatches;

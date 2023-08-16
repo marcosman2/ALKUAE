@@ -1,7 +1,7 @@
-package Pages;
+package pages;
 
-import Base.TestReport;
-import Base.Wrappers;
+import base.TestReport;
+import base.Wrappers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -44,16 +44,10 @@ public class AEStartsPage extends Wrappers {
 
     public boolean isStartsBoardDisplayed(){
 
-        try{
+        waitForDisplayed(lblStatus, "Issue trying to navigate to Starts board");
+        isStartsDisplayed = true;
+        TestReport.logInfo("Navigated to Starts board");
 
-            waitForDisplayed(lblStatus);
-            isStartsDisplayed = true;
-            TestReport.logInfo("Navigated to Starts board");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to navigate to Starts board");
-        }
         return isStartsDisplayed;
     }
 
@@ -162,7 +156,7 @@ public class AEStartsPage extends Wrappers {
 
     public boolean isConsultantInfoHidden(){
 
-        waitForDisplayed(lblStatus);
+        waitForDisplayed(lblStatus, "Issue trying to navigate to Starts board");
 
         List<WebElement> contactNumber = driver.findElements(By.xpath("//div[@class='c-consultant-card__field-header ' and contains(text(), 'Contact')]/parent::*"));
         List<WebElement> bottomCardNumber = driver.findElements(By.xpath("//div[contains(@class, 'bottom')]/descendant::ul[@class='c-consultant-card__section']"));
@@ -195,7 +189,7 @@ public class AEStartsPage extends Wrappers {
 
     public boolean isClientInfoHidden(){
 
-        waitForDisplayed(lblStatus);
+        waitForDisplayed(lblStatus, "Issue trying to navigate to Starts board");
 
         List<WebElement> empTypeNumber = driver.findElements(By.xpath("//div[@class='c-consultant-card__sub-date']/div"));
         List<WebElement> topCardNumber = driver.findElements(By.xpath("//div[contains(@class, 'top')]/descendant::ul[@class='c-consultant-card__section']"));
@@ -250,19 +244,10 @@ public class AEStartsPage extends Wrappers {
         TestReport.logInfo("Clicked on 'Open Onboarding Paperwork' button");
     }
 
-    public boolean isOPWModalDisplayed(){
+    public boolean isOPWModalDisplayed() {
 
-        try{
-
-            waitForDisplayed(modalOnboardingPW);
-            isDisplayed = true;
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Onboarding Paperwork modal not displayed");
-        }
-
-        return isDisplayed;
+        return waitForDisplayed(modalOnboardingPW, "'Onboarding PW' modal not displayed");
     }
+
 
 }

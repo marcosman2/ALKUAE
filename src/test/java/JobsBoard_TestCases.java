@@ -1,6 +1,6 @@
-import Base.TestReport;
-import Base.Wrappers;
-import Pages.*;
+import base.TestReport;
+import base.Wrappers;
+import pages.*;
 import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
@@ -8,8 +8,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 
 public class JobsBoard_TestCases extends Wrappers {
@@ -46,112 +44,109 @@ public class JobsBoard_TestCases extends Wrappers {
         pgJobs = new AEJobsPage();
     }
 
-    public void goToBoard(int row){
+    public boolean goToBoard(int row){
 
-        try{
+        testData = (HashMap<String, String>) testCasesData[row][0];
 
-            if(pgHome.waitForHomeToDisplays()){
+        pgHome.selectDepartment(testData.get("Department"));
+        pgManagers.selectManager(testData.get("User"));
+        pgBoards.selectBoard(testData.get("Board"));
 
-                TestReport.logInfo("Navigated to ALKU AE");
-
-                testData = (HashMap<String, String>) testCasesData[row][0];
-
-                pgHome.selectDepartment(testData.get("Department"));
-                pgManagers.selectManager(testData.get("User"));
-                pgBoards.selectBoard(testData.get("Board"));
-
-                pgJobs.isJobsBoardDisplayed();
-            }
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to navigate to application and go to Jobs board");
-        }
+        return pgJobs.isJobsBoardDisplayed();
     }
 
     @Test(description = "Verify filter by Company", priority = 1)
     public void verifyFilterByCompany(){
 
-        goToBoard(0);
-        pgJobs.selectCompany(testData.get("Company"));
-        pgJobs.getRecordsCompanyName();
+        if(goToBoard(0)){
 
-        Assert.assertTrue(pgJobs.allCompanyNamesEqual(pgJobs.getRecordsCompanyName(), testData.get("Company")), "Not all displayed records belong to selected company");
-        TestReport.logPass("Passed - All displayed records belong to selected Company");
-        takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyFilterByCompany.png");
+            pgJobs.selectCompany(testData.get("Company"));
+            pgJobs.getRecordsCompanyName();
+
+            Assert.assertTrue(pgJobs.allCompanyNamesEqual(pgJobs.getRecordsCompanyName(), testData.get("Company")), "Not all displayed records belong to selected company");
+            TestReport.logPass("Passed - All displayed records belong to selected Company");
+            takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyFilterByCompany.png");
+        }
     }
 
     @Test(description = "Verify filter by Multidivision", priority = 2)
     public void verifyFilterByMultiDivision(){
 
-        goToBoard(0);
-        pgJobs.selectMultiDivisionOnly();
+        if(goToBoard(0)){
 
-        Assert.assertTrue(pgJobs.areAllMultiDivisionRecords(), "Not all records are MultiDivision");
-        TestReport.logPass("Passed - All displayed records are Multidivision");
-        takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyFilterByMultiDivision.png");
+            pgJobs.selectMultiDivisionOnly();
+
+            Assert.assertTrue(pgJobs.areAllMultiDivisionRecords(), "Not all records are MultiDivision");
+            TestReport.logPass("Passed - All displayed records are Multidivision");
+            takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyFilterByMultiDivision.png");
+        }
     }
 
     @Test(description = "Verify Job History popup is displayed", priority = 3)
     public void verifyJobHistoryIsDisplayed(){
 
-        goToBoard(0);
-        pgJobs.viewJobHistory();
+        if(goToBoard(0)){
 
-        Assert.assertTrue(pgJobs.isHistoryPopupDisplayed(), "Job History popup not displayed");
-        TestReport.logPass("Passed - Job History popup successfully displayed");
-        takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyJobHistoryIsDisplayed.png");
+            pgJobs.viewJobHistory();
+
+            Assert.assertTrue(pgJobs.isHistoryPopupDisplayed(), "Job History popup not displayed");
+            TestReport.logPass("Passed - Job History popup successfully displayed");
+            takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyJobHistoryIsDisplayed.png");
+        }
     }
 
     @Test(description = "Verify TC tab is displayed", priority = 4)
     public void verifyTCTabDisplayed(){
 
-        goToBoard(0);
+        if(goToBoard(0)){
 
-        Assert.assertTrue(pgJobs.isTCTabDisplayed(), "TC tab not displayed");
-        TestReport.logPass("Passed - 'TC' tab successfully displayed");
-        takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyTCTabDisplayed.png");
+            Assert.assertTrue(pgJobs.isTCTabDisplayed(), "TC tab not displayed");
+            TestReport.logPass("Passed - 'TC' tab successfully displayed");
+            takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyTCTabDisplayed.png");
 
-        /*
-         * Step needed to run repeatedly the test cases
-         *
-         * */
-        pgJobs.clickToggleTC();
+            /*
+             * Step needed to run repeatedly the test cases
+             *
+             * */
+            pgJobs.clickToggleTC();
+        }
     }
 
     @Test(description = "Verify filter by TC", priority = 5)
     public void verifyOnlyTCRecordsDisplayed(){
 
-        goToBoard(0);
+        if(goToBoard(0)){
 
-        pgJobs.isTCTabDisplayed();
-        takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyOnlyTCRecordsDisplayed_TabDisplayed.png");
+            pgJobs.isTCTabDisplayed();
+            takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyOnlyTCRecordsDisplayed_TabDisplayed.png");
 
-        pgJobs.selectTag(testData.get("Tag"));
+            pgJobs.selectTag(testData.get("Tag"));
 
-        Assert.assertTrue(pgJobs.areAllTCRecords(), "Not all records are TC");
-        TestReport.logPass("Passed - All displayed records are TC");
-        takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyOnlyTCRecordsDisplayed_OnlyTCDisplayed.png");
+            Assert.assertTrue(pgJobs.areAllTCRecords(), "Not all records are TC");
+            TestReport.logPass("Passed - All displayed records are TC");
+            takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyOnlyTCRecordsDisplayed_OnlyTCDisplayed.png");
 
-        /*
-         * Step needed to run repeatedly the test cases
-         *
-         * */
-        pgJobs.clickToggleTC();
+            /*
+             * Step needed to run repeatedly the test cases
+             *
+             * */
+            pgJobs.clickToggleTC();
+        }
     }
 
     @Test(description = "Verify Candidate is wiped and shown", priority = 6)
     public void verifyWipingShowingCandidate(){
 
-        goToBoard(0);
+        if(goToBoard(0)){
 
-        Assert.assertTrue(pgJobs.isCandidateWiped(testData.get("Candidate_FirstName"), testData.get("Candidate_LastName")), "Candidate not wiped");
-        TestReport.logPass("Passed - Candidate successfully wiped");
-        takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyWipingShowingCandidate_Wiped.png");
+            Assert.assertTrue(pgJobs.isCandidateWiped(testData.get("Candidate_FirstName"), testData.get("Candidate_LastName")), "Candidate not wiped");
+            TestReport.logPass("Passed - Candidate successfully wiped");
+            takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyWipingShowingCandidate_Wiped.png");
 
-        Assert.assertTrue(pgJobs.isCandidateShown(testData.get("Candidate_FirstName"), testData.get("Candidate_LastName")), "Candidate not shown");
-        TestReport.logPass("Passed - Candidate successfully shown");
-        takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyWipingShowingCandidate_Shown.png");
+            Assert.assertTrue(pgJobs.isCandidateShown(testData.get("Candidate_FirstName"), testData.get("Candidate_LastName")), "Candidate not shown");
+            TestReport.logPass("Passed - Candidate successfully shown");
+            takeScreenshot("Evidences/JobsBoard/JobsBoardTest_verifyWipingShowingCandidate_Shown.png");
+        }
     }
 
    @AfterMethod
