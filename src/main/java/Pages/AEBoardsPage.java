@@ -1,7 +1,7 @@
-package pages;
+package Pages;
 
-import base.TestReport;
-import base.Wrappers;
+import Base.TestReport;
+import Base.Wrappers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -36,19 +36,26 @@ public class AEBoardsPage extends Wrappers {
 
     public void selectUserOption(String option){
 
-        clickElement(iconUserOptions);
-        waitForDisplayed(linkUserOptions, "'User Options' link not displayed");
-        clickElement(driver.findElement(By.xpath("//button[@class='ant-dropdown-trigger c-sidebar__user-kebab-btn' and contains(text(), '"+option+"')]")));
-        TestReport.logInfo("User option selected: "+option);
+        try{
+
+            clickElement(iconUserOptions);
+            waitForDisplayed(linkUserOptions);
+            clickElement(driver.findElement(By.xpath("//button[@class='ant-dropdown-trigger c-sidebar__user-kebab-btn' and contains(text(), '"+option+"')]")));
+            TestReport.logInfo("User option selected: "+option);
+        }
+        catch(Exception e){
+
+            TestReport.logFail("Failed - Issue trying select user option: "+option);
+        }
     }
 
     public void selectBoard(String board){
 
-        waitForDisplayed(iconUserOptions, "'User Options' icon not displayed");
+        waitForDisplayed(iconUserOptions);
         clickElement(driver.findElement(By.xpath("//span[@class='c-sidebar__link-menu-item-label c-sidebar__hide-collapsed' and contains (text(), '"+board+"')]/parent::*")));
     }
 
-    public void selectHeaderlessBoard(){
+    public void selectHeaderlessBoard(String board){
 
         String headerlessURL = driver.getCurrentUrl().replace("header", "headerless");
         driver.get(headerlessURL);
@@ -56,14 +63,17 @@ public class AEBoardsPage extends Wrappers {
 
     public Boolean getHeaderlessBoardTitle(String expectedTitle){
 
-        waitForDisplayed(lblHeaderlessTitle, "'Headerless Board' title not displayed");
-        String boardTitle = lblHeaderlessTitle.getAttribute("innerText");
+        try{
 
-        if(boardTitle.trim().equalsIgnoreCase(expectedTitle)){
+            waitForDisplayed(lblHeaderlessTitle);
+            String boardTitle = lblHeaderlessTitle.getAttribute("innerText");
 
-            isHeaderlessDisplayed = true;
+            if(boardTitle.trim().equalsIgnoreCase(expectedTitle)){
+
+                isHeaderlessDisplayed = true;
+            }
         }
-        else{
+        catch(Exception e){
 
             TestReport.logFail(expectedTitle+" board on Headerless mode not displayed");
         }
@@ -73,8 +83,17 @@ public class AEBoardsPage extends Wrappers {
 
     public boolean isHeaderlessLogoDisplayed(){
 
-        return waitForDisplayed(imgHeaderlessLogo, "Assigned Accounts board on Headerless mode not displayed");
+        try{
 
+            waitForDisplayed(imgHeaderlessLogo);
+            isHeaderlessDisplayed = true;
+        }
+        catch(Exception e){
+
+            TestReport.logFail("Failed - Assigned Accounts board on Headerless mode not displayed");
+        }
+
+        return isHeaderlessDisplayed;
     }
 
     public void expandPeriodDropdown(){
@@ -84,8 +103,15 @@ public class AEBoardsPage extends Wrappers {
 
     public void selectPeriod(String period){
 
-       clickElement(driver.findElement(By.xpath("//div[@class='ant-select-item-option-content']/div[contains(text(), '"+period+"')]")));
-       TestReport.logInfo("Selected Period: "+period);
+        try{
+
+            clickElement(driver.findElement(By.xpath("//div[@class='ant-select-item-option-content']/div[contains(text(), '"+period+"')]")));
+            TestReport.logInfo("Selected Period: "+period);
+        }
+        catch(Exception e){
+
+            TestReport.logFail("Failed - Issue trying to select Period");
+        }
     }
 
     public String getPeriodDateRange(String month){
@@ -99,7 +125,8 @@ public class AEBoardsPage extends Wrappers {
 
         if (matcher.find()) {
 
-            return matcher.group(1);
+            String extractedText = matcher.group(1);
+            return extractedText;
         } else {
             return null;
         }

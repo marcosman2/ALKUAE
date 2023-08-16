@@ -1,7 +1,7 @@
-package pages;
+package Pages;
 
-import base.TestReport;
-import base.Wrappers;
+import Base.TestReport;
+import Base.Wrappers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -26,33 +26,55 @@ public class AEHomePage extends Wrappers {
 
     public boolean waitForHomeToDisplays(){
 
-        return waitForDisplayed(lblDivisions, "Issue trying to navigate to Home page");
+        try{
+
+            return waitForDisplayed(lblDivisions);
+        }
+        catch(Exception e){
+
+            driver.navigate().refresh();
+            return waitForDisplayed(lblDivisions);
+        }
     }
 
     public void selectDepartment(String departmentName){
 
-        waitForDisplayed(lblDivisions, "Home page not displayed");
-        clickElement(driver.findElement(By.xpath("//div[@class='c-department-card__inner false' and contains(., '"+departmentName+"')]")));
-        TestReport.logInfo("Selected Department: "+departmentName);
+        try{
+
+            waitForDisplayed(lblDivisions);
+            clickElement(driver.findElement(By.xpath("//div[@class='c-department-card__inner false' and contains(., '"+departmentName+"')]")));
+            TestReport.logInfo("Selected Department: "+departmentName);
+        }
+        catch(Exception e){
+
+            TestReport.logFail("Failed - Issue trying to select the Department");
+        }
     }
 
     public boolean divisionsDisplayed(int expectedDivisions){
 
-        waitForDisplayed(lblDivisions, "Divisions not displayed");
-        divisions =  driver.findElements(By.xpath("//h2[@class='c-brand-department-list__title']"));
+        try{
 
-        for(WebElement element: divisions){
+            waitForDisplayed(lblDivisions);
+            divisions =  driver.findElements(By.xpath("//h2[@class='c-brand-department-list__title']"));
 
-            highlightLabel(element);
+            for(WebElement element: divisions){
+
+                highlightLabel(element);
+            }
+
+            if(divisions.size() == expectedDivisions){
+
+                areExpected = true;
+            }
+            else{
+
+                TestReport.logFail("Failed - Displayed number of Divisions is not the expected");
+            }
         }
+        catch(Exception e){
 
-        if(divisions.size() == expectedDivisions){
-
-            areExpected = true;
-        }
-        else{
-
-            TestReport.logFail("Failed - Displayed number of Divisions is not the expected");
+            TestReport.logFail("Failed - Issue trying to get the number of displayed Divisions");
         }
 
        return areExpected;
@@ -60,16 +82,23 @@ public class AEHomePage extends Wrappers {
 
     public boolean departmentsDisplayed(int expectedDepartments){
 
-        waitForDisplayed(lblDivisions, "Departments not displayed");
-        List<WebElement> departments =  driver.findElements(By.xpath("//div[@class='c-department-card__inner false']"));
+        try{
 
-        if(departments.size() == expectedDepartments){
+            waitForDisplayed(lblDivisions);
+            List<WebElement> departments =  driver.findElements(By.xpath("//div[@class='c-department-card__inner false']"));
 
-            areExpected = true;
+            if(departments.size() == expectedDepartments){
+
+                areExpected = true;
+            }
+            else{
+
+                TestReport.logFail("Failed - Displayed number of Departments is not the expected");
+            }
         }
-        else{
+        catch(Exception e){
 
-            TestReport.logFail("Failed - Displayed number of Departments is not the expected");
+            TestReport.logFail("Failed - Issue trying to get the number of displayed Departments");
         }
 
         return areExpected;

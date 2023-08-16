@@ -1,17 +1,14 @@
-package base;
+package Base;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.ExtentReports.*;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 
 public class TestReport {
     private static ExtentReports extent;
     private static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
-
-    private TestReport(){
-
-    }
 
     public static void initialize(String reportName) {
         ExtentSparkReporter htmlReporter = new ExtentSparkReporter("test-output/".concat(reportName).concat(".html"));
@@ -37,8 +34,6 @@ public class TestReport {
     }
 
     public static void flushReport() {
-
         extent.flush();
-        test.remove();
     }
 }

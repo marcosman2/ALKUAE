@@ -1,7 +1,7 @@
-package pages;
+package Pages;
 
-import base.TestReport;
-import base.Wrappers;
+import Base.TestReport;
+import Base.Wrappers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -25,28 +25,35 @@ public class AEManagersPage extends Wrappers {
 
     public void selectManager(String name){
 
-        waitForDisplayed(btnChangeDept, "Managers not displayed");
+        waitForDisplayed(btnChangeDept);
         clickElement(driver.findElement(By.xpath("//div[@class='header-username bottom' and contains(text(), '"+name+"')]")));
         TestReport.logInfo("Selected Manager: "+name);
     }
 
     public boolean managersDisplayed(int managersExpected){
 
-        waitForDisplayed(btnChangeDept, "Issue trying to check the number of Managers displayed");
-        managers =  driver.findElements(By.xpath("//div[@class='header-username bottom']"));
+        try{
 
-        for(WebElement element: managers){
+            waitForDisplayed(btnChangeDept);
+            managers =  driver.findElements(By.xpath("//div[@class='header-username bottom']"));
 
-            highlightLabel(element);
+            for(WebElement element: managers){
+
+                highlightLabel(element);
+            }
+
+            if(managers.size() == managersExpected){
+
+                areManagers = true;
+            }
+            else{
+
+                TestReport.logFail("Failed - Number of Managers displayed is not the expected");
+            }
         }
+        catch(Exception e){
 
-        if(managers.size() == managersExpected){
-
-            areManagers = true;
-        }
-        else{
-
-            TestReport.logFail("Failed - Number of Managers displayed is not the expected");
+            TestReport.logFail("Failed - Issue trying to check the number of Managers displayed");
         }
 
         return areManagers;

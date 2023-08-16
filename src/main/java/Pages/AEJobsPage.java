@@ -1,7 +1,7 @@
-package pages;
+package Pages;
 
-import base.TestReport;
-import base.Wrappers;
+import Base.TestReport;
+import Base.Wrappers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -64,8 +64,6 @@ public class AEJobsPage extends Wrappers {
     boolean isWiped = false;
     boolean isShown = false;
 
-    private final String recordsXpath = "//div[@class='c-menu__popover-pointer']";
-
     public AEJobsPage(){
 
         PageFactory.initElements(driver, this);
@@ -73,25 +71,42 @@ public class AEJobsPage extends Wrappers {
 
     public boolean isJobsBoardDisplayed(){
 
-        waitForDisplayed(lblCompany, "Issue trying to navigate to Jobs board");
-        isJobsDisplayed = true;
-        TestReport.logInfo("Navigated to Jobs board");
+        try{
+
+            if(waitForDisplayed(lblCompany)){
+
+                isJobsDisplayed = true;
+                TestReport.logInfo("Navigated to Jobs board");
+            }
+        }
+        catch(Exception e){
+
+            TestReport.logFail("Failed - Issue trying to navigate to Jobs board");
+        }
 
         return isJobsDisplayed;
     }
 
     public void selectCompany(String company){
 
-        clickElement(ddCompany);
-        clickElement(driver.findElement(By.xpath("//div[@title='"+company+"']")));
-        TestReport.logInfo("Selected Company: "+company);
+        try{
+
+            clickElement(ddCompany);
+            clickElement(driver.findElement(By.xpath("//div[@title='"+company+"']")));
+            TestReport.logInfo("Selected Company: "+company);
+        }
+        catch(Exception e){
+
+            TestReport.logFail("Failed - Issue trying to select the Company");
+        }
+
     }
 
     public String[] getRecordsCompanyName(){
 
         waitAPause(2);
 
-        List<WebElement> records = driver.findElements(By.xpath(recordsXpath));
+        List<WebElement> records = driver.findElements(By.xpath("//div[@class='c-menu__popover-pointer']"));
         String[] recordsCompany = new String[records.size()];
 
         for(record = 0; record < records.size(); record++){
@@ -105,18 +120,25 @@ public class AEJobsPage extends Wrappers {
 
     public boolean allCompanyNamesEqual(String[] companies, String expectedCompany){
 
-        areEqual = true;
-        record = 0;
+        try{
 
-        while (areEqual && record < companies.length){
+            areEqual = true;
+            record = 0;
 
-            if(!companies[record].equalsIgnoreCase(expectedCompany)){
+            while (areEqual && record < companies.length){
 
-                areEqual = false;
-                TestReport.logFail("Failed - Not all displayed records belong to selected Company");
-                break;
+                if(!companies[record].equalsIgnoreCase(expectedCompany)){
+
+                    areEqual = false;
+                    TestReport.logFail("Failed - Not all displayed records belong to selected Company");
+                    break;
+                }
+                record++;
             }
-            record++;
+        }
+        catch(Exception e){
+
+            TestReport.logFail("Failed - Issue trying to check if all displayed records belong to selected Company");
         }
 
         return areEqual;
@@ -131,23 +153,30 @@ public class AEJobsPage extends Wrappers {
 
     public boolean areAllMultiDivisionRecords(){
 
-        recordsExpected = false;
+        try{
 
-        List<WebElement> records = driver.findElements(By.xpath(recordsXpath));
-        List<WebElement> multiDivisionTabs = driver.findElements(By.xpath("//div[@class='toptab multi-division']"));
+            recordsExpected = false;
 
-        if(records.size() == multiDivisionTabs.size()){
+            List<WebElement> records = driver.findElements(By.xpath("//div[@class='c-menu__popover-pointer']"));
+            List<WebElement> multiDivisionTabs = driver.findElements(By.xpath("//div[@class='toptab multi-division']"));
 
-            recordsExpected = true;
+            if(records.size() == multiDivisionTabs.size()){
+
+                recordsExpected = true;
+            }
+            else{
+
+                TestReport.logFail("Failed - Not all displayed records are Multidivision");
+            }
+
+            for(WebElement tabs: multiDivisionTabs){
+
+                highlightLabel(tabs);
+            }
         }
-        else{
+        catch(Exception e){
 
-            TestReport.logFail("Failed - Not all displayed records are Multidivision");
-        }
-
-        for(WebElement tabs: multiDivisionTabs){
-
-            highlightLabel(tabs);
+            TestReport.logFail("Failed - Issue trying to check if all displayed records are Multidivision");
         }
 
         return recordsExpected;
@@ -161,15 +190,23 @@ public class AEJobsPage extends Wrappers {
 
     public boolean isHistoryPopupDisplayed(){
 
-        if(waitForDisplayed(popupHistory, "'Job History' popup not displayed") && waitForDisplayed(lblHistoryManager, "History Manager not displayed")
-            && waitForDisplayed(lblHistoryJobs, "Job History not displayed") && waitForDisplayed(lblHistoryHires, "Hires History not displayed")
-                && waitForDisplayed(lblHistoryInterviews, "Interviews History not displayed")){
+        try{
 
-            isHistory = true;
+            waitForDisplayed(popupHistory);
+
+            if(popupHistory.isDisplayed() && lblHistoryManager.isDisplayed() && lblHistoryJobs.isDisplayed() && lblHistoryHires.isDisplayed()
+                    && lblHistoryInterviews.isDisplayed()){
+
+                isHistory = true;
+            }
+            else{
+
+                TestReport.logFail("Failed - Job History popup not displayed");
+            }
         }
-        else{
+        catch(Exception e){
 
-            TestReport.logFail("Failed - Job History popup not displayed");
+            TestReport.logFail("Failed - Issue trying to display Job History popup");
         }
 
         return isHistory;
@@ -201,19 +238,26 @@ public class AEJobsPage extends Wrappers {
 
     public boolean isTCTabDisplayed() {
 
-        if(isTCTabNotDisplayed()){
+        try{
 
-            clickToggleTC();
+            if(isTCTabNotDisplayed()){
 
-            if(waitForDisplayed(tabTC, "TC tab not displayed")){
+                clickToggleTC();
+                waitForDisplayed(tabTC);
+                if(tabTC.isDisplayed()){
 
-                isTabDisplayed = true;
-                highlightLabel(tabTC);
+                    isTabDisplayed = true;
+                    highlightLabel(tabTC);
+                }
+            }
+            else{
+
+                TestReport.logFail("Failed - TC tab already displayed");
             }
         }
-        else{
+        catch(Exception e){
 
-            TestReport.logFail("Failed - TC tab already displayed");
+            TestReport.logFail("Failed - Issue trying to display TC tab");
         }
 
         return isTabDisplayed;
@@ -228,21 +272,28 @@ public class AEJobsPage extends Wrappers {
 
     public boolean areAllTCRecords(){
 
-       List<WebElement> records = driver.findElements(By.xpath("//div[@class='c-menu__popover-pointer']"));
-       List<WebElement> tcTabs = driver.findElements(By.xpath("//div[@class='tabs-container']/descendant::p[contains(text(), 'TC')]"));
+       try{
 
-       if(records.size() == tcTabs.size()){
+           List<WebElement> records = driver.findElements(By.xpath("//div[@class='c-menu__popover-pointer']"));
+           List<WebElement> tcTabs = driver.findElements(By.xpath("//div[@class='tabs-container']/descendant::p[contains(text(), 'TC')]"));
 
-           recordsExpected = true;
+           if(records.size() == tcTabs.size()){
+
+               recordsExpected = true;
+           }
+           else{
+
+               TestReport.logFail("Failed - Not all displayed records are TC");
+           }
+
+           for(WebElement element: tcTabs){
+
+               highlightLabel(element);
+           }
        }
-       else{
+       catch(Exception e){
 
-           TestReport.logFail("Failed - Not all displayed records are TC");
-       }
-
-       for(WebElement element: tcTabs){
-
-           highlightLabel(element);
+           TestReport.logFail("Failed - Issue trying to check if all displayed records are TC");
        }
 
         return recordsExpected;
@@ -250,40 +301,45 @@ public class AEJobsPage extends Wrappers {
 
     public void showWipeCandidate(String firstName, String lastName){
 
-        clickElement(btnShowWipeCandidates);
-        waitAPause(2);
-        clickElement(driver.findElement(By.xpath("//span[@class='candidate-name' and text()='"+firstName+"' and text()='"+lastName+"']/parent::td/following-sibling::*/button")));
-        driver.navigate().refresh();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='filter-header-input']/div[contains(text(), 'Company')]")));
+        try{
 
+            clickElement(btnShowWipeCandidates);
+            waitAPause(2);
+            driver.findElement(By.xpath("//span[@class='candidate-name' and text()='"+firstName+"' and text()='"+lastName+"']/parent::td/following-sibling::*/button")).click();
+            driver.navigate().refresh();
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='filter-header-input']/div[contains(text(), 'Company')]")));
+        }
+        catch(Exception e){
+
+            TestReport.logFail("Failed - Issue trying to show or wipe Candidate");
+        }
     }
 
     public boolean isCandidateWiped(String firstName, String lastName){
 
-       waitAPause(3);
+        try{
 
-       try {
+           waitAPause(3);
 
-           if (driver.findElement(By.xpath("//span[text()='" + firstName + "' and text()='" + lastName + "']")).isDisplayed()) {
+            if(driver.findElement(By.xpath("//span[text()='"+firstName+"' and text()='"+lastName+"']")).isDisplayed()){
 
-               showWipeCandidate(firstName, lastName);
-               TestReport.logInfo("Clicked on Wipe Candidate");
+                showWipeCandidate(firstName, lastName);
+                TestReport.logInfo("Clicked on Wipe Candidate");
 
-               try {
+                try {
 
-                   driver.findElement(By.xpath("//span[text()='" + firstName + "' and text()='" + lastName + "']")).isDisplayed();
-                   TestReport.logFail("Failed - Issue trying to wipe Candidate");
-               } catch (Exception e) {
-                   isWiped = true;
-               }
-           }
-       }
-       catch(Exception e){
-
-           TestReport.logFail("Failed - Candidate to be wiped not found");
-       }
-
+                    driver.findElement(By.xpath("//span[text()='" + firstName + "' and text()='" + lastName + "']")).isDisplayed();
+                    TestReport.logFail("Failed - Issue trying to wipe Candidate");
+                }
+                catch (Exception e){
+                    isWiped = true;
+                }
+            }
+        }
+        catch(Exception e){
+            TestReport.logFail("Failed - Candidate not assigned to the Job or already wiped");
+        }
         return isWiped;
     }
 
