@@ -1,4 +1,4 @@
-package Base;
+package base;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
@@ -9,19 +9,23 @@ public class WebDriverSingleton {
 
     private static WebDriver driver;
 
+    private WebDriverSingleton(){
+
+    }
+
     public static WebDriver getInstance() {
 
         if (driver == null) {
 
             System.setProperty("webdriver.chrome.driver", "Drivers/chromedriver.exe");
 
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments("--headless=new");
+            //ChromeOptions options = new ChromeOptions();
+            //options.addArguments("--headless=new");
 
-            Dimension screenSize = new Dimension(1920, 1080);
-            options.addArguments("--window-size=" + screenSize.getWidth() + "," + screenSize.getHeight());
+            //Dimension screenSize = new Dimension(1920, 1080);
+            //options.addArguments("--window-size=" + screenSize.getWidth() + "," + screenSize.getHeight());
 
-            driver = new ChromeDriver(options);
+            driver = new ChromeDriver(/*options*/);
         }
 
         return driver;
