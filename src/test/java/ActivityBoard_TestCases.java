@@ -1,6 +1,6 @@
-import base.TestReport;
-import base.Wrappers;
-import pages.*;
+import Base.TestReport;
+import Base.Wrappers;
+import Pages.*;
 import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
@@ -48,20 +48,32 @@ public class ActivityBoard_TestCases extends Wrappers {
 
     public void goToBoardAndAddJob(int row){
 
-        testData = (HashMap<String, String>) testCasesData[row][0];
+        try{
 
-        pgHome.selectDepartment(testData.get("Department"));
-        pgManagers.selectManager(testData.get("User"));
-        pgBoards.selectBoard(testData.get("Board"));
+            if(pgHome.waitForHomeToDisplays()){
 
-        if(pgActivity.isActivityBoardDisplayed()){
+                TestReport.logInfo("Navigated to ALKU AE");
 
-            waitAPause(3);
-            pgActivity.clickOnAddJob(testData.get("Recruiter"));
-            pgActivity.selectCompanyAndPosition(testData.get("Company"), testData.get("Position"));
-            pgActivity.selectDate(testData.get("Date"), testData.get("Day"));
-            pgActivity.selectTimeZoneAndMeetingWay( testData.get("TimeZone"), testData.get("Phone_F2F"));
-            TestReport.logInfo("Information needed to add a Job entered");
+                testData = (HashMap<String, String>) testCasesData[row][0];
+
+                pgHome.selectDepartment(testData.get("Department"));
+                pgManagers.selectManager(testData.get("User"));
+                pgBoards.selectBoard(testData.get("Board"));
+
+                if(pgActivity.isActivityBoardDisplayed()){
+
+                    waitAPause(3);
+                    pgActivity.clickOnAddJob(testData.get("Recruiter"));
+                    pgActivity.selectCompanyAndPosition(testData.get("Company"), testData.get("Position"));
+                    pgActivity.selectDate(testData.get("Date"), testData.get("Day"));
+                    pgActivity.selectTimeZoneAndMeetingWay( testData.get("TimeZone"), testData.get("Phone_F2F"));
+                    TestReport.logInfo("Information needed to add a Job entered");
+                }
+            }
+        }
+        catch(Exception e){
+
+            TestReport.logFail("Failed - Issue trying to navigate to application, go to Activity board and add a Job");
         }
     }
 

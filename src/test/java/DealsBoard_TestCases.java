@@ -1,6 +1,6 @@
-import base.TestReport;
-import base.Wrappers;
-import pages.*;
+import Base.TestReport;
+import Base.Wrappers;
+import Pages.*;
 import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
@@ -47,19 +47,30 @@ public class DealsBoard_TestCases extends Wrappers {
 
     public void goToBoardAndSelectManagerAndPeriod(int row){
 
-        testData = (HashMap<String, String>) testCasesData[row][0];
+        try{
 
-        pgHome.selectDepartment(testData.get("Department"));
-        pgManagers.selectManager(testData.get("User"));
+            if(pgHome.waitForHomeToDisplays()){
 
-        if(pgDeals.isDealsBoardDisplayed()){
+                TestReport.logInfo("Navigated to ALKU AE");
 
-            pgBoards.expandPeriodDropdown();
-            waitAPause(1);
-            pgBoards.selectPeriod(testData.get("Period"));
-            waitAPause(2);
+                testData = (HashMap<String, String>) testCasesData[row][0];
+
+                pgHome.selectDepartment(testData.get("Department"));
+                pgManagers.selectManager(testData.get("User"));
+
+                if(pgDeals.isDealsBoardDisplayed()){
+
+                    pgBoards.expandPeriodDropdown();
+                    waitAPause(1);
+                    pgBoards.selectPeriod(testData.get("Period"));
+                    waitAPause(2);
+                }
+            }
         }
+        catch(Exception e){
 
+            TestReport.logFail("Failed - Issue trying to navigate to application, go to Deals board and select the Period");
+        }
     }
 
     @Test(description = "Verify 'Total Deals' matches with number of records", priority = 1)

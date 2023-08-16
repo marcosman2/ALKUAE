@@ -1,7 +1,7 @@
-package pages;
+package Pages;
 
-import base.TestReport;
-import base.Wrappers;
+import Base.TestReport;
+import Base.Wrappers;
 
 import java.util.ArrayList;
 
@@ -11,16 +11,23 @@ public class AEUserGuidePage extends Wrappers {
 
     public Boolean isUserGuideDisplayed(String expectedUrl){
 
-        ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
-        driver.switchTo().window(tabs.get(1));
+        try{
 
-        if(driver.getCurrentUrl().equalsIgnoreCase(expectedUrl)){
+            ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
+            driver.switchTo().window(tabs.get(1));
 
-            isUGDisplayed = true;
+            if(driver.getCurrentUrl().equalsIgnoreCase(expectedUrl)){
+
+                isUGDisplayed = true;
+            }
+            else{
+
+                TestReport.logFail("Failed - User Guide not displayed");
+            }
         }
-        else{
+        catch(Exception e){
 
-            TestReport.logFail("Failed - User Guide not displayed");
+            TestReport.logFail("Failed - Issue trying to navigate to User Guide");
         }
 
         return isUGDisplayed;

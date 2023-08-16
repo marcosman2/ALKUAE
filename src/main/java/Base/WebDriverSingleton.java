@@ -1,4 +1,4 @@
-package base;
+package Base;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
@@ -8,10 +8,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 public class WebDriverSingleton {
 
     private static WebDriver driver;
-
-    private WebDriverSingleton(){
-
-    }
 
     public static WebDriver getInstance() {
 
