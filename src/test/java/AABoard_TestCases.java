@@ -46,67 +46,63 @@ public class AABoard_TestCases extends Wrappers {
         pgAA = new AEAssignedAccountsPage();
     }
 
-    public void goToBoard(int row){
+    public boolean goToBoard(int row){
 
-        try{
+        testData = (HashMap<String, String>) testCasesData[row][0];
 
-            if(pgHome.waitForHomeToDisplays()){
+        pgHome.selectDepartment(testData.get("Department"));
+        pgManagers.selectManager(testData.get("User"));
+        pgBoards.selectBoard(testData.get("Board"));
 
-                TestReport.logInfo("Navigated to ALKU AE");
-
-                testData = (HashMap<String, String>) testCasesData[row][0];
-
-                pgHome.selectDepartment(testData.get("Department"));
-                pgManagers.selectManager(testData.get("User"));
-                pgBoards.selectBoard(testData.get("Board"));
-
-                pgAA.isAABoardDisplayed();
-            }
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to navigate to application and go to Assigned Accounts board");
-        }
+        return pgAA.isAABoardDisplayed();
     }
 
     @Test(description = "Verify that records al filtered by Company", priority = 1)
     public void verifyFilteringByCompany(){
 
-        goToBoard(0);
-        pgAA.selectCompany(testData.get("Company"));
+        if(goToBoard(0)){
 
-        Assert.assertTrue(pgAA.allRecordsBelongToSelectedCompany(testData.get("Company")), "Not all records displayed belong to selected company");
-        TestReport.logPass("Passed - All displayed records belong to selected Company");
+            pgAA.selectCompany(testData.get("Company"));
+
+            Assert.assertTrue(pgAA.allRecordsBelongToSelectedCompany(testData.get("Company")), "Not all records displayed belong to selected company");
+            TestReport.logPass("Passed - All displayed records belong to selected Company");
+        }
     }
 
     @Test(description = "Verify that records al filtered by Account Manager", priority = 2)
     public void verifyFilteringByAM(){
 
-        goToBoard(0);
-        pgAA.selectAM(testData.get("AM_FirstName").concat(" ").concat(testData.get("AM_LastName")));
+        if(goToBoard(0)){
 
-        Assert.assertTrue(pgAA.allRecordsBelongToSelectedAM(testData.get("AM_FirstName"), testData.get("AM_LastName")), "Not all records displayed belong to the selected AM");
-        TestReport.logPass("Passed - All displayed records belong to selected Account Manager");
+            pgAA.selectAM(testData.get("AM_FirstName").concat(" ").concat(testData.get("AM_LastName")));
+
+            Assert.assertTrue(pgAA.allRecordsBelongToSelectedAM(testData.get("AM_FirstName"), testData.get("AM_LastName")), "Not all records displayed belong to the selected AM");
+            TestReport.logPass("Passed - All displayed records belong to selected Account Manager");
+        }
     }
 
     @Test(description = "Verify that records al filtered by Division", priority = 3)
     public void verifyFilteringByDivision(){
 
-        goToBoard(0);
-        pgAA.selectDivision(testData.get("Division"));
+        if(goToBoard(0)){
 
-        Assert.assertTrue(pgAA.allRecordsBelongToSelectedDivision(testData.get("Division")), "Not all records displayed belong to selected Division");
-        TestReport.logPass("Passed - All displayed records belong to selected Division");
+            pgAA.selectDivision(testData.get("Division"));
+
+            Assert.assertTrue(pgAA.allRecordsBelongToSelectedDivision(testData.get("Division")), "Not all records displayed belong to selected Division");
+            TestReport.logPass("Passed - All displayed records belong to selected Division");
+        }
     }
 
     @Test(description = "Verify that records al filtered by Program", priority = 4)
     public void verifyFilteringByProgram(){
 
-        goToBoard(0);
-        pgAA.setDdSelectProgram(testData.get("Program"));
+        if(goToBoard(0)){
 
-        Assert.assertTrue(pgAA.allRecordsBelongToSelectedProgram(testData.get("Program")), "Not all records displayed belong to selected Program");
-        TestReport.logPass("Passed - All displayed records belong to selected Program");
+            pgAA.setDdSelectProgram(testData.get("Program"));
+
+            Assert.assertTrue(pgAA.allRecordsBelongToSelectedProgram(testData.get("Program")), "Not all records displayed belong to selected Program");
+            TestReport.logPass("Passed - All displayed records belong to selected Program");
+        }
     }
 
    @AfterMethod

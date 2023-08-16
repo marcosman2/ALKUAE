@@ -1,7 +1,7 @@
 package Pages;
 
-import Base.TestReport;
-import Base.Wrappers;
+import base.TestReport;
+import base.Wrappers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -42,53 +42,32 @@ public class AETouchScreenPage extends Wrappers {
 
     public void navigateToTS(String department){
 
-        try{
-
-            String tsURL = driver.getCurrentUrl().concat("ts/").concat(department);
-            driver.get(tsURL);
-            TestReport.logInfo("Navigated to '" +department+"' Department on Touch Screen mode");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to navigate to Touch Screen mode");
-        }
+        String tsURL = driver.getCurrentUrl().concat("ts/").concat(department);
+        driver.get(tsURL);
+        TestReport.logInfo("Navigated to '" +department+"' Department on Touch Screen mode");
     }
 
 
     public void navigateToBoard(String board){
 
-        try{
-
-            waitForEnabled(btnNavigationButtons);
-            scrollToElement(btnNavigationButtons);
-            clickElement(driver.findElement(By.xpath("//ul[@class='c-ts-menu__board-selector']/li/button[contains(@aria-label, '"+board+"')]")));
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to navigate to board");
-        }
+        waitForEnabled(btnNavigationButtons);
+        scrollToElement(btnNavigationButtons);
+        clickElement(driver.findElement(By.xpath("//ul[@class='c-ts-menu__board-selector']/li/button[contains(@aria-label, '"+board+"')]")));
     }
 
     public boolean isBoardDisplayed(String boardName, Boolean booleanMethod){
 
-       try{
+       waitForDisplayed(lblBoardName, "Issue trying to navigate to Board: "+boardName.toUpperCase());
 
-           waitForDisplayed(lblBoardName);
+       if(booleanMethod && lblBoardName.getText().equalsIgnoreCase(boardName)){
 
-           if(booleanMethod && lblBoardName.getText().equalsIgnoreCase(boardName)){
+           isDisplayed = true;
 
-               isDisplayed = true;
-
-               highlightLabel(lblBoardName);
-           }
-           else{
-
-               TestReport.logFail("Failed - Board "+boardName.toUpperCase()+"not displayed");
-           }
+           highlightLabel(lblBoardName);
        }
-       catch(Exception e){
+       else{
 
-           TestReport.logFail("Failed - Issue trying to navigate to Board: "+boardName.toUpperCase());
+           TestReport.logFail("Failed - Board "+boardName.toUpperCase()+"not displayed");
        }
 
         return isDisplayed;
@@ -96,39 +75,32 @@ public class AETouchScreenPage extends Wrappers {
 
     public boolean areBoardsButtonsExpanded(){
 
-        try{
+        buttonsExpanded = driver.findElements(By.xpath("//button[contains(@class, 'is-open')]"));
 
+        if(buttonsExpanded.size() == 0){
+
+            clickElement(btnMenu);
+            TestReport.logInfo("Clicked on 'Menu' button");
+            waitAPause(1);
             buttonsExpanded = driver.findElements(By.xpath("//button[contains(@class, 'is-open')]"));
 
-            if(buttonsExpanded.size() == 0){
+            if(buttonsExpanded.size() == 6){
 
-                clickElement(btnMenu);
-                TestReport.logInfo("Clicked on 'Menu' button");
-                waitAPause(1);
-                buttonsExpanded = driver.findElements(By.xpath("//button[contains(@class, 'is-open')]"));
+                areExpanded = true;
 
-                if(buttonsExpanded.size() == 6){
+                for(WebElement buttons: buttonsExpanded){
 
-                    areExpanded = true;
-
-                    for(WebElement buttons: buttonsExpanded){
-
-                        highlightLabel(buttons);
-                    }
-                }
-                else{
-
-                    TestReport.logFail("Failed - Boards buttons not expanded");
+                    highlightLabel(buttons);
                 }
             }
             else{
 
-                TestReport.logFail("Failed - Boards buttons already expanded");
+                TestReport.logFail("Failed - Boards buttons not expanded");
             }
         }
-        catch(Exception e){
+        else{
 
-            TestReport.logFail("Failed - Issue trying to validate if boards buttons are expanded");
+            TestReport.logFail("Failed - Boards buttons already expanded");
         }
 
         return areExpanded;
@@ -136,45 +108,38 @@ public class AETouchScreenPage extends Wrappers {
 
     public boolean areArrowsDisplayed(){
 
-        try{
+        arrows = driver.findElements(By.xpath("//button[contains(@class, 'pagination-arrow')]"));
+
+        if(arrows.size() == 0){
+
+            clickElement(btnSettings);
+            TestReport.logInfo("Clicked on Settings");
+
+            clickElement(btnAdvancedPagination);
+            TestReport.logInfo("Clicked on Advanced Pagination");
+
+            clickElement(btnCloseSettings);
+            waitAPause(2);
 
             arrows = driver.findElements(By.xpath("//button[contains(@class, 'pagination-arrow')]"));
 
-            if(arrows.size() == 0){
+            if(arrows.size() == 2){
 
-                clickElement(btnSettings);
-                TestReport.logInfo("Clicked on Settings");
+                areArrows = true;
 
-                clickElement(btnAdvancedPagination);
-                TestReport.logInfo("Clicked on Advanced Pagination");
+                for(WebElement arrow: arrows){
 
-                clickElement(btnCloseSettings);
-                waitAPause(2);
-
-                arrows = driver.findElements(By.xpath("//button[contains(@class, 'pagination-arrow')]"));
-
-                if(arrows.size() == 2){
-
-                    areArrows = true;
-
-                    for(WebElement arrow: arrows){
-
-                        highlightLabel(arrow);
-                    }
-                }
-                else{
-
-                    TestReport.logFail("Failed - Navigation arrows not displayed");
+                    highlightLabel(arrow);
                 }
             }
             else{
 
-                TestReport.logFail("Failed - Navigation arrows already displayed");
+                TestReport.logFail("Failed - Navigation arrows not displayed");
             }
         }
-        catch(Exception e){
+        else{
 
-            TestReport.logFail("Failed - Issue trying to validate if navigation arrows are displayed");
+            TestReport.logFail("Failed - Navigation arrows already displayed");
         }
 
         return areArrows;

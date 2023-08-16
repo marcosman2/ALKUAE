@@ -1,7 +1,7 @@
 package Pages;
 
-import Base.TestReport;
-import Base.Wrappers;
+import base.TestReport;
+import base.Wrappers;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -124,16 +124,9 @@ public class AEActivityPage extends Wrappers {
 
     public boolean isActivityBoardDisplayed(){
 
-        try{
-
-            waitForDisplayed(lblDisplayTimeframe);
-            isActivityDisplayed = true;
-            TestReport.logInfo("Navigate to Activity board");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to navigate to Activity board");
-        }
+        waitForDisplayed(lblDisplayTimeframe, "Issue trying to navigate to Activity board");
+        isActivityDisplayed = true;
+        TestReport.logInfo("Navigate to Activity board");
 
         return isActivityDisplayed;
     }
@@ -141,7 +134,7 @@ public class AEActivityPage extends Wrappers {
     public void clickOnAddJob(String recruiter){
 
         clickElement(driver.findElement(By.xpath("//*[contains(., '"+recruiter+"')]/following-sibling::div/div[@class='add-job']")));
-        waitForDisplayed(lblAddJobModalTitle);
+        waitForDisplayed(lblAddJobModalTitle, "'Add Job' modal not displayed");
     }
 
     public void selectNextDate(){
@@ -183,11 +176,11 @@ public class AEActivityPage extends Wrappers {
 
     public void selectTimeZoneAndMeetingWay(String timeZone, String phoneOrF2F){
 
-        waitForDisplayed(lblSelectTime);
+        waitForDisplayed(lblSelectTime, "'Select Time' modal not displayed");
         clickElement(btnOK);
-        waitForDisplayed(btnTimeZone);
+        waitForDisplayed(btnTimeZone, "'Select Timezone' modal not displayed");
         clickElement(driver.findElement(By.xpath("//div[@class='dialog-btn' and contains(text(), '"+timeZone+"')]")));
-        waitForDisplayed(btnPhone);
+        waitForDisplayed(btnPhone, "'Phone or F2F' modal not displayed");
         clickElement(driver.findElement(By.xpath("//div[@class='dialog-btn' and contains(text(), '"+phoneOrF2F+"')]")));
         waitAPause(2);
     }
@@ -199,8 +192,9 @@ public class AEActivityPage extends Wrappers {
            String positionName = driver.findElement(By.xpath("//div[@class='job-header__job-title']")).getAttribute("innerText");
            highlightLabel(driver.findElement(By.xpath("//div[@class='job-header-leftbox']/descendant::span[contains(text(), '"+company+"')]")));
 
-           if(driver.findElement(By.xpath("//div[@class='job-header-leftbox']/descendant::span[contains(text(), '"+company+"')]")).isDisplayed() &&
-                   positionName.contains(position) && lblInterviewDateTime.isDisplayed() && lblInterviewId.isDisplayed()){
+           if(waitForDisplayed(driver.findElement(By.xpath("//div[@class='job-header-leftbox']/descendant::span[contains(text(), '"+company+"')]")), "Company not displayed") &&
+                   positionName.contains(position) && waitForDisplayed(lblInterviewDateTime, "Date and Time not displayed")
+                   && waitForDisplayed(lblInterviewId, "Interview ID not displayed")){
 
                isAdded = true;
            }
@@ -221,38 +215,25 @@ public class AEActivityPage extends Wrappers {
 
     public void deleteJob(){
 
-       try{
+       jobsBefore = driver.findElements(By.xpath("//div[@class='jobs-container']"));
 
-           jobsBefore = driver.findElements(By.xpath("//div[@class='jobs-container']"));
-
-           clickElement(btnDeleteJob);
-           Alert alert = driver.switchTo().alert();
-           alert.accept();
-           waitAPause(1);
-           TestReport.logInfo("Process to delete Job completed");
-       }
-       catch(Exception e){
-
-           TestReport.logFail("Failed - Issue trying to complete 'Delete Job' process");
-       }
+       clickElement(btnDeleteJob);
+       Alert alert = driver.switchTo().alert();
+       alert.accept();
+       waitAPause(1);
+       TestReport.logInfo("Process to delete Job completed");
     }
 
     public boolean isJobDeleted(){
 
-        try{
-            jobsAfter = driver.findElements(By.xpath("//div[@class='jobs-container']"));
+        jobsAfter = driver.findElements(By.xpath("//div[@class='jobs-container']"));
 
-            if(jobsAfter.size() == jobsBefore.size()-1){
-                isDeleted = true;
-            }
-            else{
-
-                TestReport.logFail("Failed - Job not deleted");
-            }
+        if(jobsAfter.size() == jobsBefore.size()-1){
+            isDeleted = true;
         }
-        catch (Exception e){
+        else{
 
-            TestReport.logFail("Failed - Issue trying to delete the Job");
+            TestReport.logFail("Failed - Job not deleted");
         }
 
         return isDeleted;
@@ -260,18 +241,11 @@ public class AEActivityPage extends Wrappers {
 
     public void addCandidate(String firstName, String lastName){
 
-        try{
-
-            clickElement(btnAddCandidate);
-            waitForDisplayed(lblAddCandidateModalTitle);
-            clickElement(driver.findElement(By.xpath("//div[@class='item-label' and text()='"+firstName+"' and '"+lastName+"']")));
-            waitAPause(1);
-            TestReport.logInfo("Information needed to add a Candidate entered");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to enter Candidate information");
-        }
+        clickElement(btnAddCandidate);
+        waitForDisplayed(lblAddCandidateModalTitle, "'Add Candidate' modal not displayed");
+        clickElement(driver.findElement(By.xpath("//div[@class='item-label' and text()='"+firstName+"' and '"+lastName+"']")));
+        waitAPause(1);
+        TestReport.logInfo("Information needed to add a Candidate entered");
     }
 
     public boolean isCandidateAdded(String firstName, String lastName){
@@ -293,18 +267,11 @@ public class AEActivityPage extends Wrappers {
 
     public void deleteCandidate(String firstName, String lastName){
 
-        try{
-
-            clickElement(driver.findElement(By.xpath("//span[@class='candidate-name' and text()='"+firstName.concat(" ".concat(lastName))+"']")));
-            waitAPause(1);
-            clickElement(optionRemoveFromSlot);
-            waitAPause(1);
-            TestReport.logInfo("'Delete Candidate' process completed");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to complete 'Delete Candidate' process");
-        }
+        clickElement(driver.findElement(By.xpath("//span[@class='candidate-name' and text()='"+firstName.concat(" ".concat(lastName))+"']")));
+        waitAPause(1);
+        clickElement(optionRemoveFromSlot);
+        waitAPause(1);
+        TestReport.logInfo("'Delete Candidate' process completed");
     }
 
     public boolean isCandidateDeleted(String firstName, String lastName){
@@ -325,18 +292,11 @@ public class AEActivityPage extends Wrappers {
 
     public void viewCandidateHistory(String firstName, String lastName){
 
-        try{
-
-            clickElement( driver.findElement(By.xpath("//span[@class='candidate-name' and text()='"+firstName.concat(" ".concat(lastName))+"']")));
-            waitAPause(1);
-            clickElement(optionViewHistory);
-            waitAPause(1);
-            TestReport.logInfo("'View Candidate History' process completed");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to complete 'View History Candidate' process");
-        }
+        clickElement( driver.findElement(By.xpath("//span[@class='candidate-name' and text()='"+firstName.concat(" ".concat(lastName))+"']")));
+        waitAPause(1);
+        clickElement(optionViewHistory);
+        waitAPause(1);
+        TestReport.logInfo("'View Candidate History' process completed");
     }
 
     public boolean isCandidateHistoryDisplayed(String firstName, String lastName){
@@ -397,51 +357,29 @@ public class AEActivityPage extends Wrappers {
 
     public void clickOnConferenceLine(){
 
-       try{
-
-           clickElement(linkConferenceLine);
-           TestReport.logInfo("Clicked on Conference Line link");
-       }
-       catch(Exception e){
-
-           TestReport.logFail("Issue trying to click on Conference Line link");
-       }
-
+       clickElement(linkConferenceLine);
+       TestReport.logInfo("Clicked on Conference Line link");
     }
 
     public void setConferenceLine(String conferenceLine){
 
-        try{
-
-            waitForEnabled(txtConferenceLine);
-            txtConferenceLine.sendKeys(Keys.CONTROL+"a");
-            txtConferenceLine.sendKeys(Keys.BACK_SPACE);
-            type(txtConferenceLine, conferenceLine);
-            clickElement(btnSaveConferenceLine);
-            waitAPause(1);
-            TestReport.logInfo("Information needed to set a Conference Line entered");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to complete 'Set Conference Line' process");
-        }
+        waitForEnabled(txtConferenceLine);
+        txtConferenceLine.sendKeys(Keys.CONTROL+"a");
+        txtConferenceLine.sendKeys(Keys.BACK_SPACE);
+        type(txtConferenceLine, conferenceLine);
+        clickElement(btnSaveConferenceLine);
+        waitAPause(1);
+        TestReport.logInfo("Information needed to set a Conference Line entered");
     }
 
     public void setZoomInformation(String text, String link){
 
-        try{
-
-            clickElement(tabLink);
-            type(txtZoomDisplayedText, text);
-            type(txtZoomLink, link);
-            clickElement(btnSaveConferenceLine);
-            waitAPause(1);
-            TestReport.logInfo("Information needed to set a Zoom call entered");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to complete 'Set Zoom Information' process");
-        }
+        clickElement(tabLink);
+        type(txtZoomDisplayedText, text);
+        type(txtZoomLink, link);
+        clickElement(btnSaveConferenceLine);
+        waitAPause(1);
+        TestReport.logInfo("Information needed to set a Zoom call entered");
     }
 
     public boolean isConferenceInfoTheExpected(String infoExpected){
@@ -473,59 +411,31 @@ public class AEActivityPage extends Wrappers {
 
     public void deleteConferenceInfo(){
 
-        try{
-
-            clickElement(tabLink);
-            type(txtZoomDisplayedText, "");
-            type(txtZoomLink, "");
-            clickElement(tabLine);
-            txtConferenceLine.sendKeys(Keys.CONTROL+"a");
-            txtConferenceLine.sendKeys(Keys.BACK_SPACE);
-            clickElement(btnSaveConferenceLine);
-            TestReport.logInfo("'Delete Conference Information' process completed");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to complete 'Delete Conference Information' process");
-        }
+        clickElement(tabLink);
+        type(txtZoomDisplayedText, "");
+        type(txtZoomLink, "");
+        clickElement(tabLine);
+        txtConferenceLine.sendKeys(Keys.CONTROL+"a");
+        txtConferenceLine.sendKeys(Keys.BACK_SPACE);
+        clickElement(btnSaveConferenceLine);
+        TestReport.logInfo("'Delete Conference Information' process completed");
     }
 
     public void clickOnToday(){
 
-        try {
-
-            clickElement(btnToday);
-            TestReport.logInfo("Click on 'Today' tab");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Issue trying to click on 'Today' tab");
-        }
+        clickElement(btnToday);
+        TestReport.logInfo("Click on 'Today' tab");
     }
 
     public void clickOnNextDay(){
 
-        try{
-
-            clickElement(btnNextDay);
-            TestReport.logInfo("Click on 'Next Day' tab");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Issue trying to click on 'Next Day' tab");
-        }
+        clickElement(btnNextDay);
+        TestReport.logInfo("Click on 'Next Day' tab");
     }
 
     public void clickOnAll(){
 
-        try{
-
-            clickElement(btnAll);
-            TestReport.logInfo("Click on 'All' button");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Issue trying to click on 'Click All' tab");
-        }
+        clickElement(btnAll);
+        TestReport.logInfo("Click on 'All' button");
     }
 }

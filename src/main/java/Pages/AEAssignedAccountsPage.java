@@ -1,7 +1,7 @@
 package Pages;
 
-import Base.TestReport;
-import Base.Wrappers;
+import base.TestReport;
+import base.Wrappers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
@@ -50,16 +50,9 @@ public class AEAssignedAccountsPage extends Wrappers {
 
     public boolean isAABoardDisplayed(){
 
-        try{
-
-            waitForDisplayed(btnCompany);
-            isAADisplayed = true;
-            TestReport.logInfo("Navigated to Assigned Accounts board");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to navigate to Assigned Accounts board");
-        }
+        waitForDisplayed(btnCompany, "Issue trying to navigate to Assigned Accounts board");
+        isAADisplayed = true;
+        TestReport.logInfo("Navigated to Assigned Accounts board");
 
         return isAADisplayed;
     }
@@ -77,79 +70,44 @@ public class AEAssignedAccountsPage extends Wrappers {
 
     public void selectCompany(String company){
 
-        try{
-
-            selectFromDropdown(ddSelectCompany, txtSelectCompany, company);
-            TestReport.logInfo("Selected Company: "+company);
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to select the Company");
-        }
+        selectFromDropdown(ddSelectCompany, txtSelectCompany, company);
+        TestReport.logInfo("Selected Company: "+company);
     }
 
     public void selectAM(String accountManager){
 
-        try{
-
-            selectFromDropdown(ddSelectAM, txtSelectAM, accountManager);
-            TestReport.logInfo("Selected Account Manager: "+accountManager);
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to select the Account Manager");
-        }
+        selectFromDropdown(ddSelectAM, txtSelectAM, accountManager);
+        TestReport.logInfo("Selected Account Manager: "+accountManager);
     }
 
     public void selectDivision(String division){
 
-        try{
-
-            selectFromDropdown(ddSelectDivision, txtSelectDivision, division);
-            TestReport.logInfo("Selected Division: "+division);
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to select the Division");
-        }
+       selectFromDropdown(ddSelectDivision, txtSelectDivision, division);
+       TestReport.logInfo("Selected Division: "+division);
     }
 
     public void setDdSelectProgram(String program){
 
-        try{
-
-            selectFromDropdown(ddSelectProgram, txtSelectProgram, program);
-            TestReport.logInfo("Selected Program: "+program);;
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to select the Program");
-        }
+       selectFromDropdown(ddSelectProgram, txtSelectProgram, program);
+       TestReport.logInfo("Selected Program: "+program);
     }
 
     public boolean allRecordsBelong(List<WebElement> list, String filter){
 
-        try{
+        for (WebElement element: list){
 
-            for (WebElement element: list){
-
-                highlightLabel(element);
-            }
-
-            waitAPause(1);
-
-            if(records.size() == list.size()){
-
-                areAllRecords = true;
-            }
-            else{
-
-                TestReport.logFail("Failed - Not All displayed records belong to the selected ".concat(filter));
-            }
+            highlightLabel(element);
         }
-        catch(Exception e){
 
-            TestReport.logFail("Failed - Issue trying to check displayed records");
+        waitAPause(1);
+
+        if(records.size() == list.size()){
+
+            areAllRecords = true;
+        }
+        else{
+
+            TestReport.logFail("Failed - Not All displayed records belong to the selected ".concat(filter));
         }
 
         return areAllRecords;

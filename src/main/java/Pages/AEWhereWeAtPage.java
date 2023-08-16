@@ -1,7 +1,7 @@
 package Pages;
 
-import Base.TestReport;
-import Base.Wrappers;
+import base.TestReport;
+import base.Wrappers;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -33,63 +33,43 @@ public class AEWhereWeAtPage extends Wrappers {
 
     public boolean isWWABoardDisplayed(){
 
-        try{
-
-            waitForDisplayed(lblLastUpdated);
-            isWWADisplayed = true;
-            TestReport.logInfo("Navigated to Where We At board");
-        }
-        catch(Exception e){
-
-            TestReport.logFail("Failed - Issue trying to navigate to Where We At board");
-        }
+        waitForDisplayed(lblLastUpdated, "Issue trying to navigate to Where We At board");
+        isWWADisplayed = true;
+        TestReport.logInfo("Navigated to Where We At board");
 
         return isWWADisplayed;
     }
 
     public boolean isDealsMonthDateTheExpected(String month){
 
-        try{
+        scrollToElement(lblDealsMonth);
+        highlightLabel(lblDealsMonth);
 
-            scrollToElement(lblDealsMonth);
-            highlightLabel(lblDealsMonth);
+        if(lblDealsMonth.getText().replace("(", "").replace(")", "").equalsIgnoreCase(pgBoards.getPeriodDateRange(month))){
 
-            if(lblDealsMonth.getText().replace("(", "").replace(")", "").equalsIgnoreCase(pgBoards.getPeriodDateRange(month))){
-
-                dateMatches = true;
-            }
-            else{
-
-                TestReport.logFail("Failed - 'Deals Month' date does not match with selected period");
-            }
+            dateMatches = true;
         }
-        catch(Exception e){
+        else{
 
-            TestReport.logFail("Failed - Issue trying to check 'Deals Month' date");
+            TestReport.logFail("Failed - 'Deals Month' date does not match with selected period");
         }
+
 
         return dateMatches;
     }
 
     public boolean isDealsProgressDateTheExpected(String month){
 
-        try{
+        scrollToElement(lblDealsProgress);
+        highlightLabel(lblDealsProgress);
 
-            scrollToElement(lblDealsProgress);
-            highlightLabel(lblDealsProgress);
+        if(lblDealsProgress.getText().replace("(", "").replace(")", "").equalsIgnoreCase(pgBoards.getPeriodDateRange(month))){
 
-            if(lblDealsProgress.getText().replace("(", "").replace(")", "").equalsIgnoreCase(pgBoards.getPeriodDateRange(month))){
-
-                dateMatches = true;
-            }
-            else{
-
-                TestReport.logFail("Failed - 'Deals Progress' date does not match with selected period");
-            }
+            dateMatches = true;
         }
-        catch(Exception e){
+        else{
 
-            TestReport.logFail("Failed - Issue trying to check 'Deals Progress' date");
+            TestReport.logFail("Failed - 'Deals Progress' date does not match with selected period");
         }
 
         return dateMatches;
@@ -97,23 +77,16 @@ public class AEWhereWeAtPage extends Wrappers {
 
     public boolean isDealsStackRankDateTheExpected(String month){
 
-        try{
+        scrollToElement(lblDealsStackRank);
+        highlightLabel(lblDealsStackRank);
 
-            scrollToElement(lblDealsStackRank);
-            highlightLabel(lblDealsStackRank);
+        if(lblDealsStackRank.getText().replace("(", "").replace(")", "").equalsIgnoreCase(pgBoards.getPeriodDateRange(month))){
 
-            if(lblDealsStackRank.getText().replace("(", "").replace(")", "").equalsIgnoreCase(pgBoards.getPeriodDateRange(month))){
-
-                dateMatches = true;
-            }
-            else{
-
-                TestReport.logFail("Failed - 'Deals Stack Rank' date does not match with selected period");
-            }
+            dateMatches = true;
         }
-        catch(Exception e){
+        else{
 
-            TestReport.logFail("Failed - Issue trying to check 'Stack Rank' date");
+            TestReport.logFail("Failed - 'Deals Stack Rank' date does not match with selected period");
         }
 
         return dateMatches;

@@ -47,30 +47,19 @@ public class DealsBoard_TestCases extends Wrappers {
 
     public void goToBoardAndSelectManagerAndPeriod(int row){
 
-        try{
+        testData = (HashMap<String, String>) testCasesData[row][0];
 
-            if(pgHome.waitForHomeToDisplays()){
+        pgHome.selectDepartment(testData.get("Department"));
+        pgManagers.selectManager(testData.get("User"));
 
-                TestReport.logInfo("Navigated to ALKU AE");
+        if(pgDeals.isDealsBoardDisplayed()){
 
-                testData = (HashMap<String, String>) testCasesData[row][0];
-
-                pgHome.selectDepartment(testData.get("Department"));
-                pgManagers.selectManager(testData.get("User"));
-
-                if(pgDeals.isDealsBoardDisplayed()){
-
-                    pgBoards.expandPeriodDropdown();
-                    waitAPause(1);
-                    pgBoards.selectPeriod(testData.get("Period"));
-                    waitAPause(2);
-                }
-            }
+            pgBoards.expandPeriodDropdown();
+            waitAPause(1);
+            pgBoards.selectPeriod(testData.get("Period"));
+            waitAPause(2);
         }
-        catch(Exception e){
 
-            TestReport.logFail("Failed - Issue trying to navigate to application, go to Deals board and select the Period");
-        }
     }
 
     @Test(description = "Verify 'Total Deals' matches with number of records", priority = 1)
