@@ -1,7 +1,7 @@
 package Pages;
 
-import base.TestReport;
-import base.Wrappers;
+import Base.TestReport;
+import Base.Wrappers;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;

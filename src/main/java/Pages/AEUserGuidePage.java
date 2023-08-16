@@ -1,7 +1,7 @@
 package Pages;
 
-import base.TestReport;
-import base.Wrappers;
+import Base.TestReport;
+import Base.Wrappers;
 
 import java.util.ArrayList;
 
