@@ -1,7 +1,7 @@
 package Base;
 
-import pages.AEHomePage;
-import pages.LastPassPage;
+import Pages.AEHomePage;
+import Pages.LastPassPage;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
